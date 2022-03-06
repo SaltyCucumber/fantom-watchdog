@@ -1,10 +1,14 @@
 {
+  "homepage": "https://saltycucumber.github.io/fantom-watchdog/",
   "name": "fantom-watchdog",
   "version": "1.0.0",
   "description": "",
   "main": "index.tsx",
   "scripts": {
-    "start": "webpack serve --config webpack.config.js",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
+    "start": "webpack serve --open --config webpack.dev.js",
+    "build": "webpack --config webpack.prod.js",
     "format": "prettier --write \"./src/**/*.{ts,tsx}\""
   },
   "repository": {
@@ -13,7 +17,6 @@
   },
   "author": "SaltyCucumber",
   "license": "MIT",
-  "homepage": "https://github.com/SaltyCucumber/fantom-watchdog#readme",
   "devDependencies": {
     "@babel/plugin-transform-react-jsx": "^7.17.3",
     "@babel/plugin-transform-runtime": "^7.17.0",
@@ -28,13 +31,15 @@
     "eslint": "^8.10.0",
     "eslint-config-react-app": "^7.0.0",
     "file-loader": "^6.2.0",
+    "gh-pages": "^3.2.3",
     "html-webpack-plugin": "^5.5.0",
     "prettier": "^2.5.1",
     "style-loader": "^3.3.1",
     "typescript": "^4.6.2",
     "webpack": "^5.70.0",
     "webpack-cli": "^4.9.2",
-    "webpack-dev-server": "^4.7.4"
+    "webpack-dev-server": "^4.7.4",
+    "webpack-merge": "^5.8.0"
   },
   "dependencies": {
     "@paintswap/marketplace-interactions": "^0.2.3",
