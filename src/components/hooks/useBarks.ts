@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 
 export const useBarks = () => {
-  const [isBarksEnabled, setIsBarksEnabled] = useState(false);
+  const [isBarksEnabled, setIsBarksEnabled] = useState<boolean | null>(null);
 
   useEffect(() => {
     if (window.Notification?.permission === 'granted') {
       setIsBarksEnabled(true);
+    } else {
+      setIsBarksEnabled(false);
     }
   }, []);
 

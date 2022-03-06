@@ -23,7 +23,7 @@ const Home = () => {
   const { isBarksEnabled } = useBarks();
 
   useEffect(() => {
-    if (!isListening) {
+    if (!isListening && isBarksEnabled !== null) {
       marketplace.onNewListing(async (newListing) => {
         const collectionName = await getCollectionName(newListing);
 
