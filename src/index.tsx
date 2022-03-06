@@ -7,7 +7,7 @@ import { styleSettings } from './constants';
 const GlobalStyle = createGlobalStyle`
   body {
     background-color: ${styleSettings.colors.void};
-    font-family: PTMono-Regular;
+    font-family: 'PT Mono', monospace;
     color: ${styleSettings.colors.stark};
   }
 
