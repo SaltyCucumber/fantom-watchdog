@@ -40,4 +40,5 @@ module.exports = {
       __REACT_DEVTOOLS_GLOBAL_HOOK__: '({ isDisabled: true })',
     }),
   ],
+  devtool: 'inline-source-map',
 };
