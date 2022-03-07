@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { ethers } from 'ethers';
 
 import { NewListingPro, PriceUpdatePro, SoldNftPro } from '../../constants';
-import { formatPrice, getCollectionName, getTime } from '../../helpers';
+import { formatPrice, getCollectionName, getTime, onMyWatch } from '../../helpers';
 import { useBarks } from '../hooks';
 import Listings from './Listings';
 import SoldNfts from './SoldNfts';
@@ -30,31 +30,38 @@ const Home = () => {
   useEffect(() => {
     if (!isListening && isBarksEnabled !== null) {
       marketplace.onNewListing(async (newListing) => {
-        const collectionName = await getCollectionName(newListing.collection);
-        const time = getTime();
+        const isOnMyWatch = onMyWatch(newListing.collection);
+        if (isOnMyWatch) {
+          const collectionName = await getCollectionName(newListing.collection);
 
-        const newListingPro: NewListingPro = Object.assign({}, newListing, { collectionName }, { time });
+          const time = getTime();
 
-        if (isBarksEnabled) {
-          new Notification(`New listing for ${collectionName}`);
+          const newListingPro: NewListingPro = Object.assign({}, newListing, { collectionName }, { time });
+
+          if (isBarksEnabled) {
+            new Notification(`New listing for ${collectionName}`);
+          }
+
+          listings.unshift(newListingPro);
+          setListings([...listings]);
         }
-
-        listings.unshift(newListingPro);
-        setListings([...listings]);
       });
 
       marketplace.onSold(async (soldNft) => {
-        const collectionName = await getCollectionName(soldNft.collection);
-        const time = getTime();
+        const isOnMyWatch = onMyWatch(soldNft.collection);
+        if (isOnMyWatch) {
+          const collectionName = await getCollectionName(soldNft.collection);
+          const time = getTime();
 
-        const soldNftPro: SoldNftPro = Object.assign({}, soldNft, { collectionName }, { time });
+          const soldNftPro: SoldNftPro = Object.assign({}, soldNft, { collectionName }, { time });
 
-        if (isBarksEnabled) {
-          new Notification(`Sold NFT from ${collectionName} for ${formatPrice(soldNft.pricePerUnit)} FTM`);
+          if (isBarksEnabled) {
+            new Notification(`Sold NFT from ${collectionName} for ${formatPrice(soldNft.pricePerUnit)} FTM`);
+          }
+
+          soldNfts.unshift(soldNftPro);
+          setSoldNfts([...soldNfts]);
         }
-
-        soldNfts.unshift(soldNftPro);
-        setSoldNfts([...soldNfts]);
       });
 
       marketplace.onPriceUpdate((priceUpdate) => {
@@ -62,9 +69,10 @@ const Home = () => {
 
         const priceUpdatePro: PriceUpdatePro = Object.assign({}, priceUpdate, { time });
 
-        if (isBarksEnabled) {
-          new Notification('Price updated');
-        }
+        // TODO need to get what collection price was updated somehow
+        // if (isBarksEnabled) {
+        //   new Notification('Price updated');
+        // }
 
         priceUpdates.unshift(priceUpdatePro);
         setPriceUpdates([...priceUpdates]);
