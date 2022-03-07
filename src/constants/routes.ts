@@ -1,3 +1,4 @@
+// TODO: fix routing for gh-pages
 export const routes = {
-  homepage: '/fantom-watchdog',
+  homepage: process.env.NODE_ENV === 'development' ? '/' : '/fantom-watchdog',
 };

@@ -1,33 +1,39 @@
 import { memo, useEffect, useState } from 'react';
-import { BundlePriceUpdate, MarketplaceV2, Sold } from '@paintswap/marketplace-interactions';
+import { MarketplaceV2 } from '@paintswap/marketplace-interactions';
 import styled from 'styled-components';
 import { ethers } from 'ethers';
 
-import Listings from './Listings';
-import { NewListingPro } from '../../constants';
-import { getCollectionName } from '../../helpers';
+import { NewListingPro, PriceUpdatePro, SoldNftPro } from '../../constants';
+import { formatPrice, getCollectionName, getTime } from '../../helpers';
 import { useBarks } from '../hooks';
+import Listings from './Listings';
+import SoldNfts from './SoldNfts';
+import PriceUpdates from './PriceUpdates';
 
 const provider = new ethers.providers.JsonRpcProvider('https://rpc.ftm.tools/');
 const marketplace = new MarketplaceV2(provider);
 
 const SHome = styled.div`
   display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  gap: 10px;
 `;
 
 const Home = () => {
   const [isListening, setIsListening] = useState(false);
   const [listings, setListings] = useState<NewListingPro[]>([]);
-  const [soldNfts, setSoldNfts] = useState<Sold[]>([]);
-  const [priceUpdates, setPriceUpdates] = useState<BundlePriceUpdate[]>([]);
+  const [soldNfts, setSoldNfts] = useState<SoldNftPro[]>([]);
+  const [priceUpdates, setPriceUpdates] = useState<PriceUpdatePro[]>([]);
   const { isBarksEnabled } = useBarks();
 
   useEffect(() => {
     if (!isListening && isBarksEnabled !== null) {
       marketplace.onNewListing(async (newListing) => {
         const collectionName = await getCollectionName(newListing.collection);
+        const time = getTime();
 
-        const newListingPro: NewListingPro = Object.assign({}, newListing, { collectionName });
+        const newListingPro: NewListingPro = Object.assign({}, newListing, { collectionName }, { time });
 
         if (isBarksEnabled) {
           new Notification(`New listing for ${collectionName}`);
@@ -37,17 +43,30 @@ const Home = () => {
         setListings([...listings]);
       });
 
-      marketplace.onSold((soldNft) => {
-        console.log('Sold!\n', soldNft);
+      marketplace.onSold(async (soldNft) => {
+        const collectionName = await getCollectionName(soldNft.collection);
+        const time = getTime();
 
-        soldNfts.unshift(soldNft);
+        const soldNftPro: SoldNftPro = Object.assign({}, soldNft, { collectionName }, { time });
+
+        if (isBarksEnabled) {
+          new Notification(`Sold NFT from ${collectionName} for ${formatPrice(soldNft.pricePerUnit)} FTM`);
+        }
+
+        soldNfts.unshift(soldNftPro);
         setSoldNfts([...soldNfts]);
       });
 
       marketplace.onPriceUpdate((priceUpdate) => {
-        console.log('Price updated\n', priceUpdate);
+        const time = getTime();
 
-        priceUpdates.unshift(priceUpdate);
+        const priceUpdatePro: PriceUpdatePro = Object.assign({}, priceUpdate, { time });
+
+        if (isBarksEnabled) {
+          new Notification('Price updated');
+        }
+
+        priceUpdates.unshift(priceUpdatePro);
         setPriceUpdates([...priceUpdates]);
       });
 
@@ -58,6 +77,8 @@ const Home = () => {
   return (
     <SHome>
       <Listings listings={listings} />
+      <SoldNfts soldNfts={soldNfts} />
+      <PriceUpdates priceUpdates={priceUpdates} />
     </SHome>
   );
 };
