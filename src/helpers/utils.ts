@@ -7,7 +7,9 @@ export const formatPrice = (amount: BigNumber): string => {
 
 export const getTime = (): string => {
   const date = new Date();
-  const time = `${date.getHours().toString().slice(-2)}:${date.getMinutes().toString().slice(-2)}`;
+  const hours = `0${date.getHours()}`.slice(-2);
+  const minutes = `0${date.getMinutes()}`.slice(-2);
+  const time = `${hours}:${minutes}`;
 
   return time;
 };
