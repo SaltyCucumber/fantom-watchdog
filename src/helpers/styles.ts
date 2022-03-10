@@ -2,7 +2,9 @@ import styled from 'styled-components';
 
 export const styleSettings = {
   colors: {
+    darkPurple: '#251d3a',
     fuschia: '#a239ca',
+    harvardCrimson: '#c20017',
     stark: '#e7dfdd',
     void: '#0e0b16',
   },
