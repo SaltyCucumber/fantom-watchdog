@@ -6,6 +6,5 @@ module.exports = merge(common, {
   mode: 'production',
   output: {
     path: path.resolve(__dirname, 'build'),
-    publicPath: '/fantom-watchdog',
   },
 });
