@@ -19,6 +19,10 @@ const PriceUpdates = ({ priceUpdates }: PriceUpdatesProps) => (
           <span>{newPrice.time}</span>
         </SFlexy>
         <SFlexy>
+          <span>Collection:</span>
+          <span>{newPrice.collectionName}</span>
+        </SFlexy>
+        <SFlexy>
           <span>New Price:</span>
           <span>{formatPrice(newPrice.price)} FTM</span>
         </SFlexy>
