@@ -21,12 +21,8 @@ export const onMyWatch = (collectionAddress: string) => {
     const watchList = JSON.parse(watchListStorage);
     const addresses = watchList.map(({ address }: WatchListEntry) => address);
 
-    if (addresses.includes(collectionAddress.toLowerCase())) {
-      return true;
-    }
-  } else {
-    return true;
+    return addresses.length === 0 || addresses.includes(collectionAddress.toLowerCase()) ? true : false;
   }
 
-  return false;
+  return true;
 };
