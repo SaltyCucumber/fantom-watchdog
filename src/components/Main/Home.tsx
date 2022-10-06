@@ -47,9 +47,7 @@ const Home = () => {
       });
 
       marketplace.onSold(async (soldNft) => {
-        console.log('onSold', soldNft);
         const isOnMyWatch = onMyWatch(soldNft.nft);
-        console.log('onSold isOnMyWatch', isOnMyWatch)
         if (isOnMyWatch) {
           const collectionName = await getCollectionName(soldNft.nft);
           const time = getTime();
